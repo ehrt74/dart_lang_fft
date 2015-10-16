@@ -81,12 +81,14 @@ void main() {
   test("Hamming works", () {
     var l = [1,1,1,1,1,1,1,1,1];
     var h = Window.Hamming(l);
+    //    print(h);
     expect(h[(l.length-1)~/2], equals(1));
   });
 
   test("Hann works", () {
     var l = [1,1,1,1,1,1,1,1,1];
     var h = Window.Hann(l);
+    //    print(h);
     expect(h[(l.length-1)~/2], equals(1));
   });
 
