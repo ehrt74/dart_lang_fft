@@ -1,0 +1,104 @@
+import 'package:complex/complex.dart';
+import 'dart:math';
+
+class FFT {
+
+  static List<Complex> Transform(List<double> x) {
+    var xcp = x.map((double d)=>new ComplexPolar(d, 0)).toList();
+    return _transform(xcp, xcp.length(), 1);
+  }
+
+  static List<ComplexPolar> _transform(List<ComplexPolar> x, int length, int step) {
+    if (length==1) return x[0];
+    SplitList sl = new SplitList(x);
+    List<ComplexPolar> results = new List<ComplexPolar>();
+    for (int i= 0; i<length/2; i++) {
+      int I = i + length/2;
+      var evens = _transform(sl.evens, length/2, step*2);
+      var odds = _transform(sl.odds, length/2, step*2);
+      odds = odds.map( (ComplexPolar cp)=>cp.turn(Twiddles.at(i, length).angle)).toList();
+      var negativeOdds = odds.map((ComplexPolar cp) => cp.turn(math.PI)).toList();
+      results.append((new SplitList(evens, odds)).combine());
+      results.append((new SplitList(evens, negativeOdds)).combine());
+    }
+    return results;
+  }
+}
+
+class Twiddles {
+  Map<int, ComplexPolar> _cache = new Map<int, ComplexPolar>();
+  int _cacheLength;
+  
+  Twiddles(this._length);
+
+  ComplexPolar get at(int i, int length) {
+    int n = i*_cacheLength/length;
+    if (!_cache.containsKey(i)) {
+      _cache[i] = new ComplexPolar(1, n * 2 * math.PI/_cacheLength);
+    }
+    return _cache[n];
+  }
+  
+}
+
+class ComplexPolar {
+  double angle;
+  double length;
+
+  ComplexPolar(double length, double angle) {
+    if (length<0) {
+      angle+=math.PI;
+      length=-length;
+    }
+    this.length = length;
+    this.angle = angle%(2 * math.PI);
+  }
+
+  factory ComplexPolar.fromComplex(Complex c) {
+    length = math.sqrt(math.pow(c.real, 2) + math.pow(c.imaginary, 2));
+    angle = math.atan2(c.imaginary, c.real);
+    return new ComplexPolar(length, angle);
+  }
+
+  ComplexPolar times(ComplexPolar other) {
+    return new ComplexPolar(this.length * other.length, this.angle+other.angle);
+  }
+  
+  ComplexPolar turn(double angle) {
+    return new ComplexPolar(this.length, this.angle + other);
+  }
+
+  ComplexPolar pow(double factor) {
+    return new ComplexPolar(math.pow(this.length, factor), this.angle*factor);
+  }
+
+  ComplexPolar stretch(double factor) {
+    return new ComplexPolar(this.length*factor, this.angle);
+  }
+
+  Complex get complex=>new Complex(math.cos(this.angle), math.sin(this.angle));
+
+}
+
+class SplitList {
+  List<ComplexPolar> evens;
+  List<ComplexPolar> odds;
+
+  SplitList.fromList(List<ComplexPolar> x) {
+    odds = new List<ComplexPolar>();
+    evens = new List<ComplexPolar>();
+    for (int i =0; i<x.length(); i++) {
+      i%2==0? evens.add(x[i]): odds.add(x[i])
+    }
+  }
+
+  SplitList(this.evens, this.odds);
+
+  List<ComplexPolar> combine() {
+    var ret = new List<ComplexPolar>();
+    for (int i=0; i< evens.length(); i++) {
+      ret..append(evens[i])..append(odds[i]);
+    }
+    return ret;
+  }
+}

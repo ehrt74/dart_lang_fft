@@ -1,0 +1,46 @@
+class ComplexPolar {
+  double angle;
+  double length;
+
+  ComplexPolar(double length, double angle) {
+    if (length<0) {
+      angle+=math.PI;
+      length=-length;
+    }
+    this.length = length;
+    this.angle = angle%(2 * math.PI);
+  }
+
+  factory ComplexPolar.fromComplex(Complex c) {
+    length = math.sqrt(math.pow(c.real, 2) + math.pow(c.imaginary, 2));
+    angle = math.atan2(c.imaginary, c.real);
+    return new ComplexPolar(length, angle);
+  }
+
+  ComplexPolar Operator+ (ComplexPolar other) {
+    return new ComplexPolar.fromComplex(this.complex + other.complex);
+  }
+  
+  ComplexPolar Operator* (ComplexPolar other) {
+    return new ComplexPolar(this.length * other.length, this.angle+other.angle);
+  }
+
+  ComplexPolar Operator- (ComplexPolar other) {
+    return new ComplexPolar(this.complex - other.complex);
+  }
+  
+  ComplexPolar turn(double angle) {
+    return new ComplexPolar(this.length, this.angle + other);
+  }
+
+  ComplexPolar pow(double factor) {
+    return new ComplexPolar(math.pow(this.length, factor), this.angle*factor);
+  }
+
+  ComplexPolar stretch(double factor) {
+    return new ComplexPolar(this.length*factor, this.angle);
+  }
+
+  Complex get complex=>new Complex(math.cos(this.angle), math.sin(this.angle));
+
+}

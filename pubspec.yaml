@@ -1,0 +1,14 @@
+name: fft
+description: A library for fourier transformations using the Cooley-Tukey algorithm
+version: 0.0.1
+author: Edouard Tavinor <edouardtavinor@gmail.com>
+#homepage: https://www.example.com
+
+environment:
+  sdk: '>=1.0.0 <2.0.0'
+
+dependencies:
+  complex: "^0.1.2"
+
+dev_dependencies:
+  test: '>=0.12.0 <0.13.0'
