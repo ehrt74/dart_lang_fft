@@ -21,6 +21,14 @@ void main() {
     expect(cp3.angle, equals(math.PI/4));
   });
 
+  test("complexpolar real", () {
+    expect(cp1.real, equals(1));
+  });
+
+  test("complexpolar imaginary", () {
+    expect(cp1.imaginary, equals(0));
+  });
+
   test("complexpolar multiply", () {
     var cp3 = cp1 * cp2;
     expect(cp3.angle, equals(math.PI/2));

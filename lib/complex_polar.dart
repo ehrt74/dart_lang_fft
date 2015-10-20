@@ -22,6 +22,9 @@ class ComplexPolar {
   String toString() {
     return "(r:${this.length}, θ:${this.angle})";
   }
+
+  num get imaginary=>this.complex.imaginary;
+  num get real=>this.complex.real;
   
   ComplexPolar operator +(ComplexPolar other) {
     return new ComplexPolar.fromComplex(this.complex + other.complex);
