@@ -52,7 +52,8 @@ class _Twiddles {
   ComplexPolar at(int i, int length) {
     int n = i*_cacheLength~/length;
     if (_cache[n]==null) {
-      _cache[n] = new ComplexPolar(1, n * 2 * math.PI/_cacheLength);
+      _cache[n] = new ComplexPolar(1, -n * 2 * math.PI/_cacheLength);
+      //      _cache[n] = new ComplexPolar(1, n * 2 * math.PI/_cacheLength);
     }
     return _cache[n];
   }

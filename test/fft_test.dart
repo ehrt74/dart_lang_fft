@@ -112,12 +112,25 @@ void main() {
       });
     }
     var fft = new FFT().Transform(Window.Hamming(input));
-    //    print(fft.where((Complex c)=>c.abs()>1));
     var results = new List<num>();
     frequencies.forEach((int i)=>results.add(fft[i].abs()));
-    //    print(results);
     var res = results.fold(true, (bool val, double n)=>val && (n>5.0));
     expect(res, equals(true)); 
 
+  });
+  test("fft has right sign for phase", () {
+    int l2len = 8;
+    int len = math.pow(2, l2len);
+    var input = new List<num>.filled(len,0);
+    
+    for (int i=0; i<len; i++) {
+      input[i] += math.sin(2*math.PI * i * 4/len);
+      input[i] += math.cos(2*math.PI * i * 7/len);
+    }
+    var fft = new FFT().Transform(Window.Hamming(input));
+    var sinArgument = fft[4].argument();
+    var cosArgument = fft[7].argument();
+    expect(sinArgument<(math.PI * -0.45) && sinArgument>(math.PI * -0.55), equals(true));
+    expect(cosArgument<0.05 && cosArgument>-0.05, equals(true));
   });
 }
