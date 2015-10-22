@@ -11,3 +11,7 @@
 ## 0.0.6
 
 - Added FFT.TransformAsComplexPolar, ComplexPolar.invert()
+
+## 0.0.7
+
+- Changed algorithm to use Complex rather than ComplexPolar

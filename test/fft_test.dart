@@ -21,12 +21,134 @@ void main() {
     expect(cp3.angle, equals(math.PI/4));
   });
 
+
+  test("complexpolar conversion", () {
+    var cp1 = new ComplexPolar.fromComplex(new Complex(1,0));
+    var cp2 = new ComplexPolar.fromComplex(new Complex(0,1));
+    var cp3 = new ComplexPolar.fromComplex(new Complex(-1,0));
+    var cp4 = new ComplexPolar.fromComplex(new Complex(0,-1));
+    expect(cp1.angle, equals(0));
+    expect(cp2.angle, equals(math.PI/2));
+    expect(cp3.angle, equals(math.PI));
+    expect(cp4.angle, equals(3*math.PI/2));
+  });
+  
+  test("complexpolar adding timed", () {
+    Stopwatch s = new Stopwatch();
+    var cp4 = new ComplexPolar(1,1);
+    var cp3 = new ComplexPolar(1,0);
+    num reps = math.pow(10,6);
+    s.start();
+    for(int i=0; i<reps; i++) {
+      cp3 = cp3+cp4;
+    }
+    s.stop();
+    print("$reps repetitions: ${s.elapsedMilliseconds}ms");
+  });
+
+  test("complexpolar multiplication timed", () {
+    Stopwatch s = new Stopwatch();
+    var cp4 = new ComplexPolar(1,1);
+    var cp3 = new ComplexPolar(1,0);
+    num reps = math.pow(10,6);
+    s.start();
+    for(int i=0; i<reps; i++) {
+      cp3 = cp3*cp4;
+    }
+    s.stop();
+    print("$reps repetitions: ${s.elapsedMilliseconds}ms");
+  });
+
+  test("complexpolar clobber multiplication timed", () {
+    Stopwatch s = new Stopwatch();
+    var cp4 = new ComplexPolar(1,1);
+    var cp3 = new ComplexPolar(1,0);
+    num reps = math.pow(10,6);
+    s.start();
+    for(int i=0; i<reps; i++) {
+      cp3.timesClobber(cp4);
+    }
+    s.stop();
+    print("$reps repetitions: ${s.elapsedMilliseconds}ms");
+  });
+
+  test("complex multiplication timed", () {
+    Stopwatch s = new Stopwatch();
+    var cp4 = new Complex(1,1);
+    var cp3 = new Complex(1,0);
+    num reps = math.pow(10,6);
+    s.start();
+    for(int i=0; i<reps; i++) {
+      cp3 = cp4*cp3;
+    }
+    s.stop();
+    print("$reps repetitions: ${s.elapsedMilliseconds}ms");
+  });
+
+  test("complexpolar imaginary timed", () {
+    Stopwatch s = new Stopwatch();
+    var cp4 = new ComplexPolar(1,1);
+    double total = 0.0;
+    num reps = math.pow(10,6);
+    s.start();
+    for(int i=0; i<reps; i++) {
+      total += cp4.imaginary;
+      cp4 = cp4.turn(0.1);
+    }
+    s.stop();
+    print("$reps repetitions: ${s.elapsedMilliseconds}ms");
+  });
+  
+  test("complexpolar conversion timed", () {
+    Stopwatch s = new Stopwatch();
+    var cp4 = new ComplexPolar(1,1);
+    num reps = math.pow(10,6);
+    s.start();
+    for(int i=0; i<reps; i++) {
+      cp4 = new ComplexPolar.fromComplex(cp4.complex);
+    }
+    s.stop();
+    print("$reps repetitions: ${s.elapsedMilliseconds}ms");
+  });
+
+  test("complexpolar invertClobber timed", () {
+    Stopwatch s = new Stopwatch();
+    var cp4 = new ComplexPolar(1,1);
+    num reps = math.pow(10,6);
+    s.start();
+    for(int i=0; i<reps; i++) {
+      cp4.invertClobber();
+    }
+    s.stop();
+    print("$reps repetitions: ${s.elapsedMilliseconds}ms");
+  });
+
+  test("complexpolar invert timed", () {
+    Stopwatch s = new Stopwatch();
+    var cp4 = new ComplexPolar(1,1);
+    num reps = math.pow(10,6);
+    s.start();
+    for(int i=0; i<reps; i++) {
+      cp4=cp4.invert();
+    }
+    s.stop();
+    print("$reps repetitions: ${s.elapsedMilliseconds}ms");
+  });
+
+  
+  
   test("complexpolar real", () {
     expect(cp1.real, equals(1));
+    var cp3 = new ComplexPolar(-2,math.PI);
+    expect(cp3.real, equals(2));
   });
 
   test("complexpolar imaginary", () {
     expect(cp1.imaginary, equals(0));
+    var cp3 = new ComplexPolar(-2, math.PI * 3/4);
+    num res = cp3.imaginary + 2* math.SQRT1_2;
+    bool passed = res<0.0001 && res>-0.0001;
+    expect(passed, equals(true));
   });
 
   test("complexpolar multiply", () {
