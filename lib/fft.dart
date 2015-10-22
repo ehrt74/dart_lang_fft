@@ -10,13 +10,16 @@ class FFT {
 
   _Twiddles _twiddles;
   
-  List<Complex> Transform(List<num> x) {
+  List<ComplexPolar> TransformAsComplexPolar(List<num> x) {
     _twiddles = new _Twiddles(x.length);
     var xcp = x.map((num d)=>new ComplexPolar(d, 0)).toList();
-    var result =  _transform(xcp, xcp.length, 1);
-    return result.map((ComplexPolar cp)=>cp.complex).toList();
+    return  _transform(xcp, xcp.length, 1);
   }
 
+  List<Complex> Transform(List<num> x) {
+    return TransformAsComplexPolar(x).map((ComplexPolar cp)=>cp.complex).toList();
+  }
+  
   List<ComplexPolar> _transform(List<ComplexPolar> x, int length, int step) {
     //    print(x);
     if (length==1) return x;

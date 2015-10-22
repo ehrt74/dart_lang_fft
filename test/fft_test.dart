@@ -50,6 +50,14 @@ void main() {
   test("complexpolar stretch", () {
     expect(cp2.stretch(4).length, equals(4));
   });
+
+
+  test("complexpolar invert", () {
+    var cp3 = new ComplexPolar(2,math.PI/4);
+    var cp4 = cp3.invert();
+    expect(cp4.length, equals(1/2));
+    expect(cp4.angle, equals(7*math.PI/4));
+  });
   /*
   test("twiddles works", () {
     var twiddles = new _Twiddles(8);

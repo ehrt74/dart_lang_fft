@@ -1,6 +1,6 @@
 name: fft
 description: A library for fourier transformations using the Cooley-Tukey algorithm
-version: 0.0.5
+version: 0.0.6
 author: Edouard Tavinor <edouardtavinor@gmail.com>
 homepage: https://github.com/ehrt74/dart_lang_fft
 

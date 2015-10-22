@@ -54,6 +54,10 @@ class ComplexPolar {
     return new ComplexPolar(this.length*factor, this.angle);
   }
 
+  ComplexPolar invert() {
+    return new ComplexPolar(1/this.length, -this.angle);
+  }
+  
   Complex get complex=>new Complex(this.length * math.cos(this.angle), this.length * math.sin(this.angle));
 
 }
