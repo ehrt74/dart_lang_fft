@@ -15,3 +15,7 @@
 ## 0.0.7
 
 - Changed algorithm to use Complex rather than ComplexPolar
+
+
+## 0.0.8
+- made WindowType visible
