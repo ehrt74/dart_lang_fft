@@ -82,7 +82,7 @@ class ComplexPolar {
   }
 
   void turnClobber(num other) {
-    this.angle = (this.angle + other.angle)%MATH2PI;
+    this.angle = (this.angle + other)%MATH2PI;
   }
 
   ComplexPolar pow(num factor) {

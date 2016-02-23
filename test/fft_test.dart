@@ -180,17 +180,6 @@ void main() {
     expect(cp4.length, equals(1/2));
     expect(cp4.angle, equals(7*math.PI/4));
   });
-  /*
-  test("twiddles works", () {
-    var twiddles = new _Twiddles(8);
-    expect(true, equals(true));
-  });
-
-  var twiddles = new _Twiddles(8);
-  test("twiddles factors", () {
-    expect(twiddles.at(3,4).length, equals(1));
-    expect(twiddles.at(3,4).angle, equals(3* math.PI/2));
-    }); */
 
   var complexPolarList1 = [ new ComplexPolar(1,0), new ComplexPolar(-1,0)];
   var complexPolarList2 = [ new ComplexPolar(0,1), new ComplexPolar(0,-1)];
@@ -262,5 +251,12 @@ void main() {
     var cosArgument = fft[7].argument();
     expect(sinArgument<(math.PI * -0.45) && sinArgument>(math.PI * -0.55), equals(true));
     expect(cosArgument<0.05 && cosArgument>-0.05, equals(true));
+  });
+
+  test("fft produces correct results", () {
+    var vals = [1,2,3,1,2,3,1,2];
+    var fft = new FFT().Transform(vals);
+    print(fft);
+
   });
 }
