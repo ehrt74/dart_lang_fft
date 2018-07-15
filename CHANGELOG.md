@@ -19,3 +19,18 @@
 
 ## 0.0.8
 - made WindowType visible
+
+## 0.0.10
+- removed ComplexPolar and replaced with new Complex type
+
+## 0.0.11
+- added inverse and conjugate()
+
+## 0.0.12
+- bug fixes
+
+## 0.0.13
+- added clone() method to complex numbers
+
+## 0.0.14
+- moved complex numbers to new library

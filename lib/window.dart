@@ -1,67 +1,73 @@
 part of fft;
 
 
-class WindowType {
+abstract class WindowType {
   String name;
   
-  static WindowType HANN = new WindowType.intern("Hann");
-  static WindowType HAMMING = new WindowType.intern("Hamming");
+  static WindowType HANN = new HannWindowType._intern();
+  static WindowType HAMMING = new HammingWindowType._intern();
+  static WindowType NONE = new NoWindowType._intern();
 
-  WindowType.intern(this.name);
+  WindowType._intern(this.name);
+
+  Iterable<num> getFactors(int len);
 
 }
 
+class HannWindowType extends WindowType {
+
+  HannWindowType._intern():super._intern("hann");
+
+  Iterable<num> getFactors(int len) {
+    var factors = new List<num>(len);
+    var factor = 2*math.PI/(len-1);
+    for (int i=0; i<len; i++)
+      factors[i] = 0.5 * (1 - math.cos(i*factor));
+    return factors;
+  }
+}
+
+class NoWindowType extends WindowType {
+
+  NoWindowType._intern():super._intern("No window");
+
+  Iterable<num> getFactors(int len) {
+    return new Iterable.generate(len, (i)=>1);
+  }
+}
+
+class HammingWindowType extends WindowType {
+
+  HammingWindowType._intern():super._intern("Hamming");
+
+  Iterable<num> getFactors(int len) {
+    var factors = new List<num>(len);
+    var factor = 2 * math.PI / (len - 1);
+    for (int i = 0; i < len; i++)
+      factors[i] = 0.54 - 0.46 * math.cos(i * factor);
+    return factors;
+  }
+}
+
+
 class Window {
 
-  static Map<WindowType, Map<int, List<num>>> _cache = new Map<WindowType, Map<int, List<num>>>();
+  final WindowType windowType;
 
-  static bool _factorsCached(WindowType type, int len) {
-    if(!_cache.containsKey(type)) {
-      _cache[type] = new Map<int, List<num>>();
-      return false;
-    }
-    if(!_cache[type].containsKey(len)) {
-      return false;
-    }
-    return true;
-  }
+  Map<int, List<num>> cache = new Map<int, List<num>>();
 
-  static List<num>_getCached(WindowType type, int len) {
-    return _cache[type][len];
-  }
-  
-  static List<num> _apply(List<num> factors, List<num> x) {
-    var len = factors.length;
-    var ret = new List<num>(len);
-    for (int i = 0; i<len; i++) {
-      ret[i] = factors[i] * x[i];
-    }
-    return ret;
-  }
-  
-  static List<num> Hann(List<num> x) {
-    var type = WindowType.HANN;
-    if(!_factorsCached(type, x.length)) {
-      var len = x.length;
-      var factors = new List<num>(len);
-      var factor = 2*math.PI/(len-1);
-      for (int i=0; i<len; i++)
-        factors[i] = 0.5 * (1 - math.cos(i*factor));
-      _cache[type][len] = factors;
-    }
-    return _apply(_getCached(type, x.length), x);
+  Window(this.windowType);
+
+  Queue<num> multiplyLists(Iterable<num> factors, Iterable<num> x) {
+    if (factors.isEmpty)
+      return new Queue();
+    return multiplyLists(factors.skip(1), x.skip(1))..addFirst(factors.first * x.first);
   }
 
-  static List<num> Hamming(List<num> x) {
-    var type = WindowType.HAMMING;
-    if(!_factorsCached(type, x.length)) {
-      var len = x.length;
-      var factors = new List<num>(len);
-      var factor = 2*math.PI/(len-1);
-      for (int i=0; i<len; i++)
-        factors[i] = 0.54 - 0.46 * math.cos(i*factor);
-      _cache[type][len] = factors;
-    }
-    return _apply(_getCached(type, x.length), x);
+  Iterable<num> apply(Iterable<num> x) {
+    int len = x.length;
+    if(!cache.containsKey(len))
+      cache[len] = windowType.getFactors(len).toList(growable:false);
+    return multiplyLists(cache[len], x);
   }
 }
