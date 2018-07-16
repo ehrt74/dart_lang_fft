@@ -30,7 +30,7 @@ class FFT {
 
     var newodds = indexedMap(odds, (i, odd)=> odd * _twiddles.at(i, length));
 
-    var results = combineIterables(
+    var results = combineIterables<Complex>(
         evens.take(halfLength), newodds.take(halfLength), (i1, i2) => i1 + i2)
       ..addAll(combineIterables(evens.take(halfLength),
           newodds.take(halfLength), (i1, i2) => i1 - i2));
