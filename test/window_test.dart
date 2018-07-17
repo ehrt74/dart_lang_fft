@@ -14,9 +14,18 @@ bool equalIterables<E>(Iterable<E> i1, Iterable<E> i2) {
 main() {
   test("Window caches results", () {
     Window window = new Window(WindowType.NONE);
-    Iterable<num> values = new Iterable.generate(16, (i)=>i);
+    List<num> values = new Iterable.generate(16, (i)=>i).toList();
     Iterable<num> results = window.apply(values);
     expect(values, equals(results));
 
+  });
+
+  test("Multiply lists works", () {
+    Window window = new Window(WindowType.NONE);
+    int len = 20000;
+    List<num> values1 = new Iterable.generate(len, (i)=>i).toList();
+    List<num> values2 = new Iterable.generate(len, (i)=>len-i).toList();
+    Iterable<num> expected = new Iterable.generate(len, (i)=>i * (len-i));
+    expect(window.multiplyLists(values1, values2), equals(expected));
   });
 }

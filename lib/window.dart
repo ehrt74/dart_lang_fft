@@ -58,13 +58,20 @@ class Window {
 
   Window(this.windowType);
 
-  Queue<num> multiplyLists(Iterable<num> factors, Iterable<num> x) {
+  List<num> multiplyLists(List<num> factors, List<num> x) {
+    if (factors.length != x.length) {
+        throw "lists of different lengths";
+    }
     if (factors.isEmpty)
-      return new Queue();
-    return multiplyLists(factors.skip(1), x.skip(1))..addFirst(factors.first * x.first);
+      return [];
+    List<num> ret = new List(factors.length);
+    for (int i=0; i<ret.length; i++) {
+      ret[i] = factors[i] * x[i];
+    }
+    return ret;
   }
 
-  Iterable<num> apply(Iterable<num> x) {
+  List<num> apply(List<num> x) {
     int len = x.length;
     if(!cache.containsKey(len))
       cache[len] = windowType.getFactors(len).toList(growable:false);

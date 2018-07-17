@@ -60,8 +60,8 @@ void main() {
     var l1 = [0,2,4,6];
     var l2 = [1,3,5,7];
 
-    expect(combineIterables(l1, l2, (i1, i2)=>i1+i2), equals([1, 5, 9, 13]));
-    expect(combineIterables(l1, l2, (i1, i2)=>i1-i2), equals([-1, -1, -1, -1]));
+    expect(combineLists(l1, l2, (i1, i2)=>i1+i2), equals([1, 5, 9, 13]));
+    expect(combineLists(l1, l2, (i1, i2)=>i1-i2), equals([-1, -1, -1, -1]));
   });
 
   test("indexed map works", () {
@@ -123,7 +123,7 @@ void main() {
   test("fft has right sign for phase", () {
     int l2len = 8;
     int len = math.pow(2, l2len);
-    var input = new Iterable.generate(len, (i) => _getValAt(i, len));
+    var input = new Iterable.generate(len, (i) => _getValAt(i, len)).toList();
 
     List<Complex> fft =
     new FFT().Transform(input);
@@ -137,5 +137,16 @@ void main() {
 
     expect(sinSignal.modulus, inExclusiveRange(len*0.48, len*0.52));
     expect(cosSignal.modulus, inExclusiveRange(len*0.48, len*0.52));
+  });
+
+  test("fft works for large samples",  () {
+    int l2len = 18;
+    int len = math.pow(2, l2len);
+    var input = (new Iterable.generate(len, (i) => _getValAt(i, len))).toList();
+
+    List<num> windowed = new Window(WindowType.HAMMING).apply(input);
+
+    List<Complex> fft = new FFT().Transform(windowed);
+
   });
 }
