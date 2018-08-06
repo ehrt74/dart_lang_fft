@@ -20,7 +20,7 @@ class HannWindowType extends WindowType {
 
   Iterable<num> getFactors(int len) {
     var factors = new List<num>(len);
-    var factor = 2*math.PI/(len-1);
+    var factor = 2*math.pi/(len-1);
     for (int i=0; i<len; i++)
       factors[i] = 0.5 * (1 - math.cos(i*factor));
     return factors;
@@ -42,7 +42,7 @@ class HammingWindowType extends WindowType {
 
   Iterable<num> getFactors(int len) {
     var factors = new List<num>(len);
-    var factor = 2 * math.PI / (len - 1);
+    var factor = 2 * math.pi / (len - 1);
     for (int i = 0; i < len; i++)
       factors[i] = 0.54 - 0.46 * math.cos(i * factor);
     return factors;

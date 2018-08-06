@@ -106,7 +106,7 @@ void main() {
 
     for (int i = 0; i < len; i++) {
       frequencies.forEach((int freq) {
-        input[i] += math.cos(2 * math.PI * i * freq / len);
+        input[i] += math.cos(2 * math.pi * i * freq / len);
       });
     }
     var window = new Window(WindowType.HAMMING);
@@ -118,7 +118,7 @@ void main() {
   });
 
   double _getValAt(int i, int len) =>
-      math.sin(2 * math.PI * i * 4 / len) + math.cos(2 * math.PI * i * 7 / len);
+      math.sin(2 * math.pi * i * 4 / len) + math.cos(2 * math.pi * i * 7 / len);
 
   test("fft has right sign for phase", () {
     int l2len = 8;
@@ -132,7 +132,7 @@ void main() {
     var sinSignal = fft[4];
     var cosSignal = fft[7];
 
-    expect(sinSignal.argument.abs(), inExclusiveRange(math.PI * 0.48, math.PI * 0.52));
+    expect(sinSignal.argument.abs(), inExclusiveRange(math.pi * 0.48, math.pi * 0.52));
     expect(cosSignal.argument, inExclusiveRange(-0.05, 0.05));
 
     expect(sinSignal.modulus, inExclusiveRange(len*0.48, len*0.52));

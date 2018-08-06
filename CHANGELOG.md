@@ -33,4 +33,9 @@
 - added clone() method to complex numbers
 
 ## 0.0.14
+
 - moved complex numbers to new library
+
+## 0.2.0
+
+- dart2 compatibility

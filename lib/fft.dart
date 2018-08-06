@@ -80,7 +80,7 @@ class _Twiddles {
 
   _Twiddles(this._cacheLength) {
     this._cache = new List<Complex>(this._cacheLength);
-    this._turn = 2 * math.PI / _cacheLength;
+    this._turn = 2 * math.pi / _cacheLength;
   }
 
   Complex at(int i, int length) {
