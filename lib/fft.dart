@@ -1,9 +1,10 @@
 library fft;
 
-import 'package:my_complex/my_complex.dart';
 import 'dart:math' as math;
 import 'dart:collection';
+
 import 'package:tuple/tuple.dart';
+import 'package:complex/complex.dart';
 
 part 'window.dart';
 
@@ -11,29 +12,29 @@ typedef T Combiner<T>(T t1, T t2);
 typedef T MapFunc<S, T>(int i, S s);
 
 class FFT {
-  _Twiddles _twiddles;
+  late _Twiddles _twiddles;
 
-  List<Complex> Transform(List<num> x) {
+  List<Complex?> Transform(List<num> x) {
     int len = x.length;
     if (!isPowerOf2(len)) throw "length must be power of 2";
     _twiddles = new _Twiddles(len);
-    var xcp = x.map((num d) => new Complex.cartesian(d, 0.0)).toList(growable:false);
+    var xcp = x.map((num d) => Complex(d as double)).toList(growable:false);
     return _transform(xcp, xcp.length, 1).toList(growable: false);
   }
 
-  List<Complex> _transform(List<Complex> x, int length, int step) {
+  List<Complex?> _transform(List<Complex> x, int length, int step) {
     if (length == 1) return x;
     int halfLength = length ~/ 2;
     var sl = new SplitList<Complex>.fromIterable(x);
-    List<Complex> evens = _transform(sl.evens, halfLength, step * 2);
-    List<Complex> odds = _transform(sl.odds, halfLength, step * 2);
+    List<Complex?> evens = _transform(sl.evens, halfLength, step * 2);
+    List<Complex?> odds = _transform(sl.odds, halfLength, step * 2);
 
-    List<Complex> newodds = indexedMap(odds, (i, odd)=> odd * _twiddles.at(i, length));
+    List<Complex?> newodds = indexedMap(odds, (i, dynamic odd)=> odd * _twiddles.at(i, length));
 
-    var results = combineIterables<Complex>(
-        evens.take(halfLength), newodds.take(halfLength), (i1, i2) => i1 + i2)
-      ..addAll(combineIterables<Complex>(evens.take(halfLength),
-          newodds.take(halfLength), (i1, i2) => i1 - i2));
+    var results = combineIterables<Complex?>(
+        evens.take(halfLength), newodds.take(halfLength), (i1, i2) => i1! + i2!)
+      ..addAll(combineIterables<Complex?>(evens.take(halfLength),
+          newodds.take(halfLength), (i1, i2) => i1! - i2!));
 
     return results;
   }
@@ -74,16 +75,16 @@ List<T> combineLists<T>(
 }
 
 class _Twiddles {
-  List<Complex> _cache;
+  late List<Complex?> _cache;
   int _cacheLength;
-  double _turn;
+  late double _turn;
 
   _Twiddles(this._cacheLength) {
-    this._cache = new List<Complex>(this._cacheLength);
+    this._cache = new List<Complex?>.filled(this._cacheLength, null);
     this._turn = 2 * math.pi / _cacheLength;
   }
 
-  Complex at(int i, int length) {
+  Complex? at(int i, int length) {
     int n = i * _cacheLength ~/ length;
     if (_cache[n] == null) {
       _cache[n] = new Complex.polar(1.0, -n * _turn);
@@ -105,7 +106,7 @@ class SplitList<T> {
 
   static Tuple2<List<T>, List<T>> _createSplitList<T>(List<T> x) {
     if (x.isEmpty)
-      return new Tuple2<List<T>, List<T>>(new List<T>(), new List<T>());
+      return new Tuple2<List<T>, List<T>>([], []);
     List<T> evens = [];
     List<T> odds = [];
     for (int i=0; i<x.length; i+=2) {

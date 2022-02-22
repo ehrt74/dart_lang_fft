@@ -1,73 +1,23 @@
+import 'dart:math' as math;
+import 'dart:io';
+
 import 'package:test/test.dart';
 import 'package:fft/fft.dart';
-import 'package:my_complex/my_complex.dart';
-import 'dart:math' as math;
+import 'package:complex/complex.dart';
 
 void main() {
-  test("complexpolar adding timed", () {
-    Stopwatch s = new Stopwatch();
-    var cp4 = new Complex.polar(1, 1);
-    var cp3 = new Complex.polar(1, 0);
-    num reps = math.pow(10, 6);
-    s.start();
-    for (int i = 0; i < reps; i++) {
-      cp3 = cp3 + cp4;
-    }
-    s.stop();
-    print("$reps repetitions: ${s.elapsedMilliseconds}ms");
-  });
-
-  test("complexpolar multiplication timed", () {
-    Stopwatch s = new Stopwatch();
-    var cp4 = new Complex.polar(1, 1);
-    var cp3 = new Complex.polar(1, 0);
-    num reps = math.pow(10, 6);
-    s.start();
-    for (int i = 0; i < reps; i++) {
-      cp3 = cp3 * cp4;
-    }
-    s.stop();
-    print("$reps repetitions: ${s.elapsedMilliseconds}ms");
-  });
-
-  test("complexpolar imaginary timed", () {
-    Stopwatch s = new Stopwatch();
-    var cp4 = new Complex.polar(1, 1);
-    double total = 0.0;
-    num reps = math.pow(10, 6);
-    s.start();
-    for (int i = 0; i < reps; i++) {
-      total += cp4.imaginary;
-      cp4 = cp4.turn(0.1);
-    }
-    s.stop();
-    print("$reps repetitions: ${s.elapsedMilliseconds}ms");
-  });
-
-  test("complexpolar invert timed", () {
-    Stopwatch s = new Stopwatch();
-    var cp4 = new Complex.polar(1, 1);
-    num reps = math.pow(10, 6);
-    s.start();
-    for (int i = 0; i < reps; i++) {
-      cp4 = cp4.inverse;
-    }
-    s.stop();
-    print("$reps repetitions: ${s.elapsedMilliseconds}ms");
-  });
-
   test("combine iterables works", () {
-    var l1 = [0,2,4,6];
-    var l2 = [1,3,5,7];
+    var l1 = [0, 2, 4, 6];
+    var l2 = [1, 3, 5, 7];
 
-    expect(combineLists(l1, l2, (i1, i2)=>i1+i2), equals([1, 5, 9, 13]));
-    expect(combineLists(l1, l2, (i1, i2)=>i1-i2), equals([-1, -1, -1, -1]));
+    expect(combineLists(l1, l2, (dynamic i1, dynamic i2) => i1 + i2), equals([1, 5, 9, 13]));
+    expect(combineLists(l1, l2, (dynamic i1, dynamic i2) => i1 - i2), equals([-1, -1, -1, -1]));
   });
 
   test("indexed map works", () {
     var l1 = new List.filled(10, 1);
-    var l2 = indexedMap(l1, (i, x)=>i*x);
-    expect(l2, equals(new Iterable.generate(10, (i)=>i)));
+    var l2 = indexedMap(l1, (i, dynamic x) => i * x);
+    expect(l2, equals(new Iterable.generate(10, (i) => i)));
   });
 
   test("FFT runs", () {
@@ -100,7 +50,7 @@ void main() {
 
   test("fft does something that makes sense", () {
     int l2len = 12;
-    int len = math.pow(2, l2len);
+    int len = math.pow(2, l2len) as int;
     var frequencies = [2, 5, 15, 35];
     var input = new List<num>.filled(len, 0);
 
@@ -109,10 +59,11 @@ void main() {
         input[i] += math.cos(2 * math.pi * i * freq / len);
       });
     }
+
     var window = new Window(WindowType.HAMMING);
     var fft = new FFT().Transform(window.apply(input));
-    var results = new List<num>();
-    frequencies.forEach((int i) => results.add(fft[i].modulus));
+    var results = <num>[];
+    frequencies.forEach((int i) => results.add(fft[i]!.abs()));
     var res = results.fold(true, (bool val, num n) => val && (n > 5.0));
     expect(res, equals(true));
   });
@@ -122,31 +73,29 @@ void main() {
 
   test("fft has right sign for phase", () {
     int l2len = 8;
-    int len = math.pow(2, l2len);
+    int len = math.pow(2, l2len) as int;
     var input = new Iterable.generate(len, (i) => _getValAt(i, len)).toList();
 
-    List<Complex> fft =
-    new FFT().Transform(input);
-//        new FFT().Transform(new Window(WindowType.HAMMING).apply(input));
+    List<Complex?> fft = new FFT().Transform(input);
 
-    var sinSignal = fft[4];
-    var cosSignal = fft[7];
+    var sinSignal = fft[4]!;
+    var cosSignal = fft[7]!;
 
-    expect(sinSignal.argument.abs(), inExclusiveRange(math.pi * 0.48, math.pi * 0.52));
-    expect(cosSignal.argument, inExclusiveRange(-0.05, 0.05));
+    expect(sinSignal.argument().abs(),
+        inExclusiveRange(math.pi * 0.48, math.pi * 0.52));
+    expect(cosSignal.argument(), inExclusiveRange(-0.05, 0.05));
 
-    expect(sinSignal.modulus, inExclusiveRange(len*0.48, len*0.52));
-    expect(cosSignal.modulus, inExclusiveRange(len*0.48, len*0.52));
+    expect(sinSignal.abs(), inExclusiveRange(len * 0.48, len * 0.52));
+    expect(cosSignal.abs(), inExclusiveRange(len * 0.48, len * 0.52));
   });
 
-  test("fft works for large samples",  () {
+  test("fft works for large samples", () {
     int l2len = 18;
-    int len = math.pow(2, l2len);
+    int len = math.pow(2, l2len) as int;
     var input = (new Iterable.generate(len, (i) => _getValAt(i, len))).toList();
 
     List<num> windowed = new Window(WindowType.HAMMING).apply(input);
 
-    List<Complex> fft = new FFT().Transform(windowed);
-
+    List<Complex?> fft = new FFT().Transform(windowed);
   });
 }

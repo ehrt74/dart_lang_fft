@@ -19,7 +19,7 @@ class HannWindowType extends WindowType {
   HannWindowType._intern():super._intern("hann");
 
   Iterable<num> getFactors(int len) {
-    var factors = new List<num>(len);
+    var factors = List.filled(len, 0.toDouble());
     var factor = 2*math.pi/(len-1);
     for (int i=0; i<len; i++)
       factors[i] = 0.5 * (1 - math.cos(i*factor));
@@ -41,7 +41,7 @@ class HammingWindowType extends WindowType {
   HammingWindowType._intern():super._intern("Hamming");
 
   Iterable<num> getFactors(int len) {
-    var factors = new List<num>(len);
+    var factors = List.filled(len, 0.toDouble());
     var factor = 2 * math.pi / (len - 1);
     for (int i = 0; i < len; i++)
       factors[i] = 0.54 - 0.46 * math.cos(i * factor);
@@ -64,7 +64,7 @@ class Window {
     }
     if (factors.isEmpty)
       return [];
-    List<num> ret = new List(factors.length);
+    List<num> ret = List.filled(factors.length, 0.toDouble());
     for (int i=0; i<ret.length; i++) {
       ret[i] = factors[i] * x[i];
     }
@@ -75,6 +75,6 @@ class Window {
     int len = x.length;
     if(!cache.containsKey(len))
       cache[len] = windowType.getFactors(len).toList(growable:false);
-    return multiplyLists(cache[len], x);
+    return multiplyLists(cache[len]!, x);
   }
 }
