@@ -8,7 +8,7 @@ environment:
   sdk: '>=1.0.0 <3.0.0'
 
 dependencies:
-  my_complex: ">=0.1.0 <1.0.0"
+  complex: ^0.7.2
   tuple: ">=1.0.1 <2.0.0"
 
 dev_dependencies:

@@ -1,9 +1,10 @@
 library fft;
 
-import 'package:my_complex/my_complex.dart';
 import 'dart:math' as math;
 import 'dart:collection';
+
 import 'package:tuple/tuple.dart';
+import 'package:complex/complex.dart';
 
 part 'window.dart';
 
@@ -17,7 +18,7 @@ class FFT {
     int len = x.length;
     if (!isPowerOf2(len)) throw "length must be power of 2";
     _twiddles = new _Twiddles(len);
-    var xcp = x.map((num d) => new Complex.cartesian(d, 0.0)).toList(growable:false);
+    var xcp = x.map((num d) => Complex(d)).toList(growable:false);
     return _transform(xcp, xcp.length, 1).toList(growable: false);
   }
 
@@ -79,7 +80,7 @@ class _Twiddles {
   double _turn;
 
   _Twiddles(this._cacheLength) {
-    this._cache = new List<Complex>(this._cacheLength);
+    this._cache = new List<Complex>.filled(this._cacheLength, null);
     this._turn = 2 * math.pi / _cacheLength;
   }
 
@@ -105,7 +106,7 @@ class SplitList<T> {
 
   static Tuple2<List<T>, List<T>> _createSplitList<T>(List<T> x) {
     if (x.isEmpty)
-      return new Tuple2<List<T>, List<T>>(new List<T>(), new List<T>());
+      return new Tuple2<List<T>, List<T>>([], []);
     List<T> evens = [];
     List<T> odds = [];
     for (int i=0; i<x.length; i+=2) {
