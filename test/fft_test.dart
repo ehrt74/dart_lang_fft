@@ -10,13 +10,13 @@ void main() {
     var l1 = [0, 2, 4, 6];
     var l2 = [1, 3, 5, 7];
 
-    expect(combineLists(l1, l2, (i1, i2) => i1 + i2), equals([1, 5, 9, 13]));
-    expect(combineLists(l1, l2, (i1, i2) => i1 - i2), equals([-1, -1, -1, -1]));
+    expect(combineLists(l1, l2, (dynamic i1, dynamic i2) => i1 + i2), equals([1, 5, 9, 13]));
+    expect(combineLists(l1, l2, (dynamic i1, dynamic i2) => i1 - i2), equals([-1, -1, -1, -1]));
   });
 
   test("indexed map works", () {
     var l1 = new List.filled(10, 1);
-    var l2 = indexedMap(l1, (i, x) => i * x);
+    var l2 = indexedMap(l1, (i, dynamic x) => i * x);
     expect(l2, equals(new Iterable.generate(10, (i) => i)));
   });
 
@@ -50,7 +50,7 @@ void main() {
 
   test("fft does something that makes sense", () {
     int l2len = 12;
-    int len = math.pow(2, l2len);
+    int len = math.pow(2, l2len) as int;
     var frequencies = [2, 5, 15, 35];
     var input = new List<num>.filled(len, 0);
 
@@ -63,7 +63,7 @@ void main() {
     var window = new Window(WindowType.HAMMING);
     var fft = new FFT().Transform(window.apply(input));
     var results = <num>[];
-    frequencies.forEach((int i) => results.add(fft[i].abs()));
+    frequencies.forEach((int i) => results.add(fft[i]!.abs()));
     var res = results.fold(true, (bool val, num n) => val && (n > 5.0));
     expect(res, equals(true));
   });
@@ -73,13 +73,13 @@ void main() {
 
   test("fft has right sign for phase", () {
     int l2len = 8;
-    int len = math.pow(2, l2len);
+    int len = math.pow(2, l2len) as int;
     var input = new Iterable.generate(len, (i) => _getValAt(i, len)).toList();
 
-    List<Complex> fft = new FFT().Transform(input);
+    List<Complex?> fft = new FFT().Transform(input);
 
-    var sinSignal = fft[4];
-    var cosSignal = fft[7];
+    var sinSignal = fft[4]!;
+    var cosSignal = fft[7]!;
 
     expect(sinSignal.argument().abs(),
         inExclusiveRange(math.pi * 0.48, math.pi * 0.52));
@@ -91,11 +91,11 @@ void main() {
 
   test("fft works for large samples", () {
     int l2len = 18;
-    int len = math.pow(2, l2len);
+    int len = math.pow(2, l2len) as int;
     var input = (new Iterable.generate(len, (i) => _getValAt(i, len))).toList();
 
     List<num> windowed = new Window(WindowType.HAMMING).apply(input);
 
-    List<Complex> fft = new FFT().Transform(windowed);
+    List<Complex?> fft = new FFT().Transform(windowed);
   });
 }

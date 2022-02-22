@@ -75,6 +75,6 @@ class Window {
     int len = x.length;
     if(!cache.containsKey(len))
       cache[len] = windowType.getFactors(len).toList(growable:false);
-    return multiplyLists(cache[len], x);
+    return multiplyLists(cache[len]!, x);
   }
 }
