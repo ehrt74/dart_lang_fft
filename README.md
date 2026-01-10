@@ -10,8 +10,8 @@ A simple usage example:
 
     main() {
     	   var data = [1.0, 0.0, -1.0, 0.0];
-	   var windowed = Window.Hann(data);
-    	   var fft = new FFT().Transform(windowed);
+    	   var windowed = Window.Hann(data);
+    	   var fft = FFT.Transform(windowed);
     }
 
 ## Features and bugs

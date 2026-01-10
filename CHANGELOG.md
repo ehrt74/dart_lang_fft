@@ -47,3 +47,7 @@
 ## 0.5.0
 
 - moved to package complex
+
+## 0.5.1
+
+- fixed readme
