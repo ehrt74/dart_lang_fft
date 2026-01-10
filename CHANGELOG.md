@@ -39,3 +39,7 @@
 ## 0.2.0
 
 - dart2 compatibility
+
+## 0.3.0
+
+- dart3 compatibility
