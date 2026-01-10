@@ -1,6 +1,6 @@
 library fft;
 
-import 'package:my_complex/my_complex.dart';
+import 'package:complex/complex.dart';
 import 'dart:math' as math;
 import 'dart:collection';
 import 'package:tuple/tuple.dart';
@@ -15,12 +15,12 @@ class FFT {
 
   FFT._intern(this._twiddles);
 
-  static List<Complex> Transform(List<num> x) {
+  static List<Complex> Transform(List<double> x) {
     int len = x.length;
     if (!isPowerOf2(len)) throw "length must be power of 2";
     final twiddles = _Twiddles.create(len);
     var xcp =
-        x.map((num d) => new Complex.cartesian(d, 0.0)).toList(growable: false);
+        x.map((double d) => Complex(d, 0.0)).toList(growable: false);
     final fft = FFT._intern(twiddles);
     return fft._transform(xcp, xcp.length, 1).toList(growable: false);
   }

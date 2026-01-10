@@ -9,13 +9,13 @@ abstract class WindowType {
 
   WindowType._intern(this.name);
 
-  List<num> getFactors(int len);
+  List<double> getFactors(int len);
 }
 
 class HannWindowType extends WindowType {
   HannWindowType._intern() : super._intern("hann");
 
-  List<num> getFactors(int len) {
+  List<double> getFactors(int len) {
     var factor = 2 * math.pi / (len - 1);
     return List.generate(len, (i) => 0.5 * (1 - math.cos(i * factor)), growable: false);
   }
@@ -24,7 +24,7 @@ class HannWindowType extends WindowType {
 class NoWindowType extends WindowType {
   NoWindowType._intern() : super._intern("No window");
 
-  List<num> getFactors(int len) {
+  List<double> getFactors(int len) {
     return List.generate(len, (i) => 1);
   }
 }
@@ -32,7 +32,7 @@ class NoWindowType extends WindowType {
 class HammingWindowType extends WindowType {
   HammingWindowType._intern() : super._intern("Hamming");
 
-  List<num> getFactors(int len) {
+  List<double> getFactors(int len) {
     var factor = 2 * math.pi / (len - 1);
     var factors = List.generate(len, (i) => 0.54 - 0.46 * math.cos(i * factor),
         growable: false);
@@ -43,28 +43,25 @@ class HammingWindowType extends WindowType {
 class Window {
   final WindowType windowType;
 
-  Map<int, List<num>> cache = new Map<int, List<num>>();
+  Map<int, List<double>> cache = new Map<int, List<double>>();
 
   Window(this.windowType);
 
-  List<num> multiplyLists(List<num> factors, List<num> x) {
+  List<double> multiplyLists(List<double> factors, List<double> x) {
     if (factors.length != x.length) {
       throw "lists of different lengths";
     }
     if (factors.isEmpty) return [];
-    List<num> ret = List.generate(factors.length, (i) => factors[i] * x[i],
+    List<double> ret = List.generate(factors.length, (i) => factors[i] * x[i],
         growable: false);
     return ret;
   }
 
-  List<num> apply(List<num> x) {
+  List<double> apply(List<double> x) {
     int len = x.length;
     return multiplyLists(
         cache.putIfAbsent(
             len, () => windowType.getFactors(len)),
         x);
-    // if (!cache.containsKey(len))
-    //   cache[len] = windowType.getFactors(len).toList(growable: false);
-    // return multiplyLists(cache[len], x);
   }
 }

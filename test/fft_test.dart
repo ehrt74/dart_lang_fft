@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 import 'package:fft/fft.dart';
-import 'package:my_complex/my_complex.dart';
+import 'package:complex/complex.dart';
 import 'dart:math' as math;
 
 int pow2(int n) {
@@ -14,58 +14,6 @@ int pow2(int n) {
 void main() {
   test("pow2 words", () {
     expect(pow2(3), equals(8));
-  });
-
-  test("complexpolar adding timed", () {
-    Stopwatch s = new Stopwatch();
-    var cp4 = new Complex.polar(1, 1);
-    var cp3 = new Complex.polar(1, 0);
-    num reps = math.pow(10, 6);
-    s.start();
-    for (int i = 0; i < reps; i++) {
-      cp3 = cp3 + cp4;
-    }
-    s.stop();
-    print("$reps repetitions: ${s.elapsedMilliseconds}ms");
-  });
-
-  test("complexpolar multiplication timed", () {
-    Stopwatch s = new Stopwatch();
-    var cp4 = new Complex.polar(1, 1);
-    var cp3 = new Complex.polar(1, 0);
-    num reps = math.pow(10, 6);
-    s.start();
-    for (int i = 0; i < reps; i++) {
-      cp3 = cp3 * cp4;
-    }
-    s.stop();
-    print("$reps repetitions: ${s.elapsedMilliseconds}ms");
-  });
-
-  test("complexpolar imaginary timed", () {
-    Stopwatch s = new Stopwatch();
-    var cp4 = new Complex.polar(1, 1);
-    double total = 0.0;
-    num reps = math.pow(10, 6);
-    s.start();
-    for (int i = 0; i < reps; i++) {
-      total += cp4.imaginary;
-      cp4 = cp4.turn(0.1);
-    }
-    s.stop();
-    print("$reps repetitions: ${s.elapsedMilliseconds}ms");
-  });
-
-  test("complexpolar invert timed", () {
-    Stopwatch s = new Stopwatch();
-    var cp4 = new Complex.polar(1, 1);
-    num reps = math.pow(10, 6);
-    s.start();
-    for (int i = 0; i < reps; i++) {
-      cp4 = cp4.inverse;
-    }
-    s.stop();
-    print("$reps repetitions: ${s.elapsedMilliseconds}ms");
   });
 
   test("combine iterables works", () {
@@ -114,19 +62,17 @@ void main() {
     int l2len = 12;
     int len = pow2(l2len);
     var frequencies = [2, 5, 15, 35];
-    var input = new List<num>.filled(len, 0);
+    var input = new List<double>.filled(len, 0);
 
     for (int i = 0; i < len; i++) {
       frequencies.forEach((int freq) {
         input[i] += math.cos(2 * math.pi * i * freq / len);
       });
     }
-//    print("input: $input");
     var window = new Window(WindowType.HAMMING);
     var fft = FFT.Transform(window.apply(input));
-//    print("fft: $fft");
     var results = <num>[];
-    frequencies.forEach((int i) => results.add(fft[i].modulus));
+    frequencies.forEach((int i) => results.add(fft[i].abs()));
     var res = results.fold(true, (bool val, num n) => val && (n > 5.0));
     expect(res, equals(true));
   });
@@ -145,12 +91,12 @@ void main() {
     var sinSignal = fft[4];
     var cosSignal = fft[7];
 
-    expect(sinSignal.argument.abs(),
+    expect(sinSignal.argument().abs(),
         inExclusiveRange(math.pi * 0.48, math.pi * 0.52));
-    expect(cosSignal.argument, inExclusiveRange(-0.05, 0.05));
+    expect(cosSignal.argument(), inExclusiveRange(-0.05, 0.05));
 
-    expect(sinSignal.modulus, inExclusiveRange(len * 0.48, len * 0.52));
-    expect(cosSignal.modulus, inExclusiveRange(len * 0.48, len * 0.52));
+    expect(sinSignal.abs(), inExclusiveRange(len * 0.48, len * 0.52));
+    expect(cosSignal.abs(), inExclusiveRange(len * 0.48, len * 0.52));
   });
 
   test("fft works for large samples", () {
@@ -158,7 +104,7 @@ void main() {
     int len = pow2(l2len);
     var input = (new Iterable.generate(len, (i) => _getValAt(i, len))).toList();
 
-    List<num> windowed = new Window(WindowType.HAMMING).apply(input);
+    List<double> windowed = new Window(WindowType.HAMMING).apply(input);
 
     List<Complex> fft = FFT.Transform(windowed);
   });

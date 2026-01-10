@@ -1,13 +1,13 @@
 name: fft
 description: A library for fourier transformations using the Cooley-Tukey algorithm
-version: 0.4.0
+version: 0.5.0
 repository: https://github.com/ehrt74/dart_lang_fft
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
-  my_complex: ">=0.2.0 <1.0.0"
+  complex: '^0.8.0'
   tuple: ">=2.0.0 <3.0.0"
 
 dev_dependencies:

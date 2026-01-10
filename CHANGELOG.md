@@ -43,3 +43,7 @@
 ## 0.4.0
 
 - dart3 compatibility
+
+## 0.5.0
+
+- moved to package complex
